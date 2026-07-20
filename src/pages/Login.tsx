@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { signIn, signUp } from "../services/auth";
 import { getAuthErrorMessage } from "../utils/errors";
 
 function Login() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -15,6 +17,7 @@ function Login() {
 
         try {
             await signIn(email, password);
+            navigate("/dashboard")
         } catch (err) {
             setError(getAuthErrorMessage(err));
         } finally {
