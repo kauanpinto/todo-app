@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getTasks, editTask, toggleTask, deleteTask } from "../services/tasks";
 import { getTaskErrorMessage } from "../utils/errors";
-import TaskForm from "../components/TaskForm";
-import TaskList from "../components/TaskList";
+import { TaskForm, TaskList } from "../components/tasks";
+import { SettingsMenu } from "../components/layout";
+import { Card, Layout } from "../components/ui";
 import type { Task } from "../services/tasks";
 
 function Dashboard() {
@@ -59,11 +60,15 @@ function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-100 px-4 py-10">
-            <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-4 shadow-xl">
-                <h1 className="mb-6 text-3xl font-bold text-center text-slate-800">
-                    Minhas Tarefas
-                </h1>
+        <Layout>
+            <Card>
+                <div className="flex mb-6 items-center justify-center gap-5">
+                    <h1 className="text-3xl font-bold text-center text-slate-800">
+                        Minhas Tarefas
+                    </h1>
+
+                    <SettingsMenu />
+                </div>
 
                 <TaskForm onCreated={handleTaskCreated} />
 
@@ -85,8 +90,8 @@ function Dashboard() {
                         onDelete={handleDeleteTask}
                     />
                 )}
-            </div>
-        </div>
+            </Card>
+        </Layout>
     );
 }
 
