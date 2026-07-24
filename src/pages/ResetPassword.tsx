@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router";
 import { updatePassword } from "../services/auth";
+import { getAuthErrorMessage } from "../utils/errors";
 import { PasswordInput, Button, Card, Layout } from "../components/ui";
 
 function ResetPassword() {
@@ -17,7 +18,7 @@ function ResetPassword() {
 
         if (!passwordRegex.test(password)) {
             setError(
-                "A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e caractere especial.",
+                "A senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e caractere especial.",
             );
             return;
         }
@@ -26,8 +27,8 @@ function ResetPassword() {
         try {
             await updatePassword(password);
             navigate("/dashboard", { replace: true });
-        } catch {
-            setError("Não foi possível redefinir a senha. Tente novamente.");
+        } catch (err) {
+            setError(getAuthErrorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -64,10 +65,7 @@ function ResetPassword() {
                             <p className="text-sm text-red-600">{error}</p>
                         )}
 
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                        >
+                        <Button type="submit" disabled={loading}>
                             {loading ? "Salvando..." : "Salvar nova senha"}
                         </Button>
                     </div>

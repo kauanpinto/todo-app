@@ -6,6 +6,7 @@ import {
     deleteAccount,
 } from "../../services/auth";
 import { Button } from "../ui";
+import { getAuthErrorMessage } from "../../utils/errors";
 import { Settings } from "lucide-react";
 
 function SettingsMenu() {
@@ -13,6 +14,7 @@ function SettingsMenu() {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [passwordSent, setPasswordSent] = useState(false);
     const [loadingAction, setLoadingAction] = useState(false);
+    const [error, setError] = useState("");
     const { session } = useAuth();
 
     async function handleLogout() {
@@ -21,11 +23,13 @@ function SettingsMenu() {
 
     async function handleChangePassword() {
         setLoadingAction(true);
+        setError("");
+
         try {
             await requestPasswordChange();
             setPasswordSent(true);
-        } catch {
-            alert("Não foi possível enviar o email de alteração.");
+        } catch (err) {
+            setError(getAuthErrorMessage(err));
         } finally {
             setLoadingAction(false);
         }
@@ -33,10 +37,12 @@ function SettingsMenu() {
 
     async function handleDeleteAccount() {
         setLoadingAction(true);
+        setError("");
+
         try {
             await deleteAccount();
-        } catch {
-            alert("Não foi possível excluir a conta. Tente novamente.");
+        } catch (err) {
+            setError(getAuthErrorMessage(err));
         } finally {
             setLoadingAction(false);
         }
@@ -57,9 +63,16 @@ function SettingsMenu() {
 
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white shadow-lg p-4 flex flex-col gap-2 z-10 animate-dropdown">
-                    <p className="text-sm text-slate-500 break-all mb-3">
+                    <p className="text-sm text-slate-500 break-all leading-6 text-center mb-2">
+                        <strong className="text-base">Sessão atual</strong> <br />
                         {session?.user.email}
                     </p>
+
+                    {error && (
+                        <p className="text-xs text-red-600 text-center">
+                            {error}
+                        </p>
+                    )}
 
                     {passwordSent ? (
                         <p className="text-xs text-slate-500">
